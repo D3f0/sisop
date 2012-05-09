@@ -1,0 +1,509 @@
+.. header::
+
+        Aplicaciones Gráficas con Qt
+
+.. footer::
+
+        Sistemas Operativos - **UNPSJB** - 2011 (###Page###/###Total###)
+
+Aplicaciones Gráficas Utilziando Qt
+===================================
+
+:Materia: Sistemas Operativos
+:Año:     2011
+:Web:     http://ccfi.com.ar/moodle
+
+
+.. image: unpsjb_big.png
+    :height: 4cm
+
+
+¿Qué es Qt?
+===========
+
+    * Qt es un toolkit para generar aplicaciones gráficas usando C++
+      en varias plataformas (Windows, Linux, MacOS X, Symbian, etc).
+
+    * El entorno de desarrollo Qt se divide en varios módulos, además
+      de algunas herramientas de consola:
+
+        * **Qt Designer** es el diseñador de ventanas.
+
+        * **Qt Assistant** es la documentación en línea.
+
+        * **Qt Linguist** es la herramienta de traducción.
+
+        * **QtCreator** IDE para facilitar el desarrollo (*mostrar*)
+
+
+Módulos de Qt
+===============
+
+    * *QtCore*
+        *QtCore* provee el objeto básico para todos los
+        elementos de Qt: *QObject* permite conectar
+        elementos gráficos (o no) mediante un mecanismo
+        de señales (**signals**) y zócalos (**slots**).
+        
+
+    * *QtGui*
+        Provee casi todos los elementos gráficos y la aplicación:
+
+            * QWidget
+
+            * QApplication
+
+Aplicación mínima en Qt
+=======================
+
+La variable app es del tipo QApplication y se crea (internamente
+se llama a **new**). La vairable ``w`` es puntero a ``QWidget``.
+
+.. code-block:: c
+
+    #include <QtGui/QApplication>
+    #include <QtGui/QWidget>
+
+    int main(int argc, char **argv){
+        QApplication app(argc, argv); // Objeto estático
+        QWidget *w = new QWidget(); // Objeto dinámico
+        w->setWindowTitle("Mi primer ventana");
+        w->show(); // Mostrar ventana
+        return app.exec();
+    }
+
+Generalmente es más sencillo incluir <QtCore> y <QtGui>.
+
+Los Widgets son clases de C++
+=============================
+
+.. code-block:: c++
+
+    // miwidget.h
+    #include <QtGui> // Agregamos todo QtGui
+    
+    class MiVentana : public QWidget {
+        Q_OBJECT      // Macroprocesador para la magia
+
+        public:
+            // No asustarse!
+            explicit MiVentana(parent = 0): QWidget(parent);
+        private:
+            QPushButton *miBoton;
+        
+    }
+
+
+Por lo general se divide la interfase **miwidget.h**  de la
+implementación **miwidget.cpp**, en la implementación se
+utiliza el operador **::** para indiciar que estamos
+implementando un método de una clase.
+
+.. code-block:: c++
+
+    
+    /** Constructor, cuando se crea un clase se llama
+      * a este método que tiene el mismo nombre que
+      * la clase, sirve para inicializar.
+      */
+    MiVentana::MiVentana(parent = 0): QWidget(parent) {
+        this->miBoton = new QPushButton("Mi botón");
+    }
+
+
+
+
+Señales y Slots
+===============
+
+Una señal es una evento que puede emitir una instancia
+de un ``QObject``, este evento puede ser conectado a uno o
+más zócalos (**slots**). Una señal puede transportar
+información y en general las señales son *thread-safe*.
+
+.. image:: sigslots.png
+    :height: 4cm
+
+(*ver ejemplo de conexión en QtCreator*)
+
+Conexión de las señales
+=======================
+
+
+Los objetos que heredan de **QObject** permiten conectar
+eventos mediante un método **QObject::connect**.
+
+.. code-block:: c++
+    
+    QObject::connect(boton, SIGNAL(clicked()),
+                     otroObjeto, SLOT(acutalizarInfo());
+
+
+
+¿Como depurar?
+==============
+
+    * ``qDebug()`` imprime cadenas, acepta ``const char *``:
+        
+        .. code-block:: c++
+        
+            // Una cadena simple
+            qDebug("Pase por acá");
+            
+            // Un mensaje formateado
+            char buffer[255];
+            int i = 4;
+            snprintf(buffer, 254, "El valor es %d", i);
+            qDebug(buffer);
+
+¿Como depurar (2)?
+==================
+
+    * También se puede usar el operador de flujo ``<<`` con
+      la función ``qDebug()``.
+
+
+        .. code-block:: c++
+
+            qDebug() << "El numero es" << QString::number(i);
+
+
+Cómo desarrollar una aplicación
+===============================
+
+En **QtCreator**, File->New...
+
+.. image:: app_inicial.png
+    :height: 5cm
+
+
+.. raw:: pdf
+
+    PageBreak
+
+Definimos la ruta y nombre del proyecto
+
+.. image:: app_inicial1.png
+    :height: 5cm
+
+
+.. raw:: pdf
+
+    PageBreak
+
+Definimos la clase principal
+    
+
+.. image:: app_inicial2.png
+    :height: 5cm
+
+
+.. raw:: pdf
+
+    PageBreak
+
+Aceptemos el resumen de la aplicación y definimos
+el sistema de control de versiones si está disponible
+(no es necesario).
+
+
+.. image:: app_inicial3.png
+    :height: 5cm
+
+
+Diseñado de la GUI
+==================
+
+Diseño de la GUI
+
+.. image:: app_inicial4.png
+    :height: 5cm
+
+.. raw:: pdf
+
+    PageBreak
+
+Definición del menú
+
+
+.. image:: app_inicial5.png
+    :height: 6cm
+
+.. raw:: pdf
+
+    PageBreak
+
+Finalmente para conectar la acción
+
+.. code-block:: c++
+
+    MainWindow::MainWindow(QWidget *parent) :
+        QMainWindow(parent),
+        ui(new Ui::MainWindow)
+    {
+        ui->setupUi(this);
+        // Conexion
+        QObject::connect(this->ui->actionSalir,
+            SIGNAL(triggered()), qApp, SLOT(quit()));
+    }
+
+Utilizando un QGraphicsView
+===========================
+
+Para agregar un ``QGraphicsView`` lo arrastramos desde la paleta
+de widgets de la izquierda.
+
+.. image:: app_inicial6.png
+    :height: 5cm
+
+Definiendo una escena
+=====================
+
+Ahora que tenemos un visor(``QGraphisView``), necesitamos una escena,
+para esto la agregamos como atributo a la clase (en mainwindow.h):
+
+.. code-block:: c++
+
+    #include <QtGui>
+    class MainWindow : public QMainWindow
+    {
+        Q_OBJECT
+    // ...
+    private:
+        Ui::MainWindow *ui;
+        QGraphicsScene  *escena;
+    };
+
+Instanciando la escena
+======================
+
+
+.. code-block:: c++
+
+    MainWindow::MainWindow(QWidget *parent) :
+        QMainWindow(parent),
+        ui(new Ui::MainWindow)
+    {
+        ui->setupUi(this);
+        // Conexion
+        QObject::connect(this->ui->actionSalir, SIGNAL(triggered()), qApp, SLOT(quit()));
+        this->escena = new QGraphicsScene(0, 0, 400, 300);
+        this->ui->graphicsView->setScene(escena);
+        // Agregar una rectangulo :)
+        this->escena->addRect(10, 10, 10, 10, QPen("black"), QBrush("red"));
+    }
+
+El resultado 
+============
+
+Ahora la aplicación cuenta con un ítem, en este caso un rectángulo,
+pero se pueden utilizar imágenes.
+
+.. image:: app_inicial7.png
+    :height: 5cm
+
+Utilizando imágenes en los ítem
+================================
+
+Para usar imágenes, hay que crear un archivo de recursos, desde:
+
+    * En **File->New**, elegir en ``Files and Classes``, **Qt Resource file**
+
+    * Elegir un nombre y a continuación en la ventana del recurso
+
+        * Agregar un prefijo, ej: imágenes (*prefix*)
+
+        * Agregar una o más imágenes ej: caballo.png
+
+    * Llamar a ``addPixmap``
+
+.. code-block:: c++
+
+    QGraphicsItem i = escena->addPixmap(QPixmap(":/imagenes/caballo.png"))
+    
+
+
+
+Comunicación de Qt y Colas
+==========================
+
+Una aplicación en C++, por ende cualquier aplicación Qt,
+puede hacer uso de las funciones de C, en particular
+nos enfocamos en las funciones ``mq_open``, ``mq_send``,
+``mq_receive``.
+
+Para comunicar con un proceso que envía mensajes, definimos
+un tipo ``Mensaje`` común a las dos aplicaciones (C y Qt/C++),
+lo haremos en mq/comun.h.
+
+
+Esquema de comunicación
+=======================
+
+Para generar una simulación, los procesos utilzaran
+colas de mensajes para notificar a la interfase de sus
+cambios de estado.
+
+.. image:: comunicacion.png
+    :height: 4cm
+
+Un tipo de mensaje común
+========================
+
+Para la aplicación de ejemplo, vamos a utilizar un mensaje
+comun a la aplicación Qt y la apelación en C.
+
+Lo definimos de la siguiente manera:
+
+.. code-block:: c++
+
+    typedef struct {
+        int quien; // Para el pid
+        int tipo;  // Tipo de mensaje, identifica
+                   // de que evento se trata
+    } Mensaje;
+
+Identificación de eventos
+=========================
+
+
+Cada mensaje enviado a la cola se identificará
+con el pid y transmitirá algún tipo de evento.
+
+.. code-block:: c++
+
+    #define TIPO_CREADO       0
+    #define TIPO_ACTIVIDAD_1  1
+    #define TIPO_ACTIVIDAD_2  2
+    #define TIPO_CERRADO      3
+
+Estas constantes representan que el proceso informa cambios
+de estado:
+
+
+Diagrama de estados del programa
+================================
+
+El siguiente diagrama ejeplifica la secuencia en los que
+cada proceso simulador enviará los mensajes, intercalando
+una espera aleatoria en las transiciones.
+
+.. image:: estados.png
+    :height: 3cm
+
+
+Código del envío
+================
+
+Código del cliente
+
+.. code-block:: c++
+
+    Mensaje m;
+    m.quien = getpid();
+    m.tipo = TIPO_CREADO;
+    mq_send(cola, (const char *)&m, sizeof(m), 0);
+    esperaAleatoria();
+    
+    m.tipo = TIPO_ACTIVIDAD_1;
+    mq_send(cola, (const char *)&m, sizeof(m), 0);
+    esperaAleatoria();
+
+    m.quien = getpid();
+    m.tipo = TIPO_ACTIVIDAD_2;
+    mq_send(cola, (const char *)&m, sizeof(m), 0);
+    esperaAleatoria();
+
+    m.quien = getpid();
+    m.tipo = TIPO_CERRADO;
+    mq_send(cola, (const char *)&m, sizeof(m), 0);
+    esperaAleatoria();
+    
+
+Recibir mensajes
+================
+
+
+Para recibir mensajes no podemos quedarnos bloqueados en un ``mq_receive()``,
+por lo que necesitamos un hilo. Para crear un hilo, necesitamos extender de
+QThread e implementar el método ``run()``
+
+Para crear una clase que herede de ``QThread`` desde File->New, elegimos **C++ Class**.
+
+.. image:: app_inicial8.png
+    :height: 3cm
+
+.. raw:: pdf
+
+    PageBreak
+
+Definición de la clase,  en este caso la bautizamos ``ReceptorMensajes``
+
+.. image:: app_inicial9.png
+    :height: 5cm
+
+
+Ejemplo
+=======================
+
+Ver ejemplo en la carpeta ``sisop``:
+
+    * Dentro de la carpeta ``mq`` se encuentra *simulador.c*
+      encargado de enviar mensajes.
+
+    * En ``mq/comun.h`` está definida la estructura de ``Mensaje``.
+
+    * Los mensajes son recibidos en el método ``run`` de la
+      clase ``ReceptorMensajes`` (``receptormensajes.h``/``receptormensajes.cpp``).
+
+    * Cada véz que llega un mensaje, se emite una señal ``recepcionMensaje(int quien, int tipo)``
+
+Ejemplo (2)
+===========
+
+    * La señal ``recepcionMensaje(int, int)`` está conectado con un slot con el mismo
+      nombre y está implementada en la ventana principal.
+
+    * Cuando el tipo de mensaje es (ver slot recepcionMensaje de mainwindow.cpp):
+
+        * TIPO_CREADO Crear un QGraphicsRectItem* con ``escena->addRect``
+
+        * TIPO_ACTIVIDAD_1 y TIPO_ACTIVIDAD_2 Cambia el color del QGraphicsRectItem* correspondiente
+
+        * TIPO_CERRADO Elimina el item de la escena
+
+Ejemplo (3)
+===========
+
+    * La ventana principal tiene un ``arreglo``, ``diccionario``, ``hashmap`` (asociación clave-valor)
+    
+        ``QMap<int,`` ``QGraphicsRectItem*>`` ``asociacionPidItem;``
+
+      En esta estructura de datos se asocia el ``pid`` con el item (ver de cambiar el tipo para utilizara
+      ``QGraphicsPixmapItem``.
+
+      Ver ``mainwindow.h``.
+
+    * Como ejemplo de manejo de estadísticas, en una de las solapas se actualiza una etiqueta (``QLabel``),
+      con la cantidad de procesos que recibe la interfase gráfica.
+
+Ejemplo (4)
+===========
+
+
+.. image:: app_inicial10.png
+    :height: 5cm
+
+
+Ejemplo (5)
+===========
+
+Recordar aumentar el tamaño máximo de el mensaje de la cola y la cantidad máxima
+de mensajes:
+
+.. code-block:: bash
+
+    echo 512 | sudo tee /proc/sys/fs/mqueue/msg_max
+
+    echo 512 | sudo tee /proc/sys/fs/mqueue/msgsize_max
+

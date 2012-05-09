@@ -27,6 +27,8 @@ void MainWindow::actualizarEstadisticas(){
     ui->labelNumero->setText(QString::number(contadorDeProcesos));
 }
 
+
+
 void MainWindow::recepcionMensaje(int quien, int tipo){
     qDebug() << "Llega mensaje de " << quien << " con el tipo " << tipo;
     QGraphicsRectItem *item;

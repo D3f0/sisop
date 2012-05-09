@@ -33,6 +33,7 @@ void ReceptorMensajes::run(){
     Mensaje m;
     ssize_t len = 0;
     while (1){
+        // Espero un nuevo mensaje
         len = mq_receive(cola, (char*) &m, attr.mq_msgsize, 0);
         if (len == -1) {
             QString s = "Error de recepcion de mensaje: ";
@@ -40,9 +41,9 @@ void ReceptorMensajes::run(){
             QMessageBox::critical(NULL, "Recepcion de mensaje", s);
         }
         // qDebug() << "Recibi mensaje" << QString::number((int)len);
+        // Emite la señal con el pid y el tipo de mensaje para que
+        // la ventana lo dibuje.
         emit recepcionMensaje(m.quien, m.tipo);
     }
-
-    // Emitir mensaje
 
 }

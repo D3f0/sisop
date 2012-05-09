@@ -13,3 +13,9 @@ filminasqt.pdf: filminasqt.txt slides.style ${genpng}
 
 %.png: %.svg
 	inkscape "$<" --export-png="$@"
+	
+	
+clean:
+	rm filminasqt.pdf
+	
+re: clean all

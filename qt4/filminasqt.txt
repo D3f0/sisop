@@ -10,7 +10,6 @@ Aplicaciones Gráficas Utilziando Qt
 ===================================
 
 :Materia: Sistemas Operativos
-:Año:     2011
 :Web:     http://ccfi.com.ar/moodle
 
 

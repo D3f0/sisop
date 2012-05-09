@@ -1,3 +1,8 @@
+20??
+readme.pdf
 *.o
 *~
 .directory
+*swp
+*.user
+qt4/sisop/PruebasSisOp

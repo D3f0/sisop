@@ -11,7 +11,7 @@ Aplicaciones Gráficas Utilziando Qt
 
 :Materia: Sistemas Operativos
 :Web:     http://ccfi.com.ar/moodle
-
+:Código de ejemplo: https://github.com/D3f0/sisop
 
 .. image: unpsjb_big.png
     :height: 4cm

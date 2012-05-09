@@ -1,8 +1,8 @@
 Material para alumnos de Sistemas Operativos
 --------------------------------------------
 
-Insrucciones
-~~~~~~~~~~~~
+Instrucciones
+~~~~~~~~~~~~~
 
 Para descargar el material::
     
